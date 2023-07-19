@@ -20,34 +20,47 @@ from pgzero.builtins import Actor, keyboard
 WIDTH = 800
 HEIGHT = 800
 
+# Plant attributes
 plant = Actor("plant")
-zombie = Actor("traffic-cone-zombie_0")
-
 p_bullets = []
-z_bullets = []
+p_bullets_directions = []
+plant_last_direction = None
 
+# Zombie attributes
+zombie = Actor("traffic-cone-zombie_0")
+z_bullets = []
+z_bullets_directions = []
+zombie_last_direction = None
 
 def control_zombie():
     """Keyboard control for zombie"""
     if keyboard.w:
         zombie.y -= 15
+        return 'up'
     if keyboard.s:
         zombie.y += 15
+        return 'down'
     if keyboard.a:
         zombie.x -= 15
+        return 'left'
     if keyboard.d:
         zombie.x += 15
+        return 'right'
     
 def control_plant():
     """Keyboard control for plant"""
     if keyboard.up:
         plant.y -= 15
+        return 'up'
     if keyboard.down:
         plant.y += 15
+        return 'down'
     if keyboard.left:
         plant.x -= 15
+        return 'left'
     if keyboard.right:
         plant.x += 15
+        return 'right'
     
 
 def boundary_check():
@@ -67,27 +80,58 @@ def boundary_check():
 
 
 def on_key_down():
+    """Shoot bullets"""
+    global plant_last_direction, zombie_last_direction
+
     if keyboard.rshift:
         bullet = Actor('tomato_1')
         p_bullets.append(bullet)
+        p_bullets_directions.append(plant_last_direction)
         bullet.pos = plant.pos
+
     if keyboard.space:
         bullet = Actor('target')
         z_bullets.append(bullet)
+        z_bullets_directions.append(zombie_last_direction)
         bullet.pos = zombie.pos
 
 
 def update():
     """Draw the game 60 times every second"""
-    control_plant()
-    control_zombie()
+    global plant_last_direction, zombie_last_direction
+    plant_last_direction = control_plant()
+    zombie_last_direction = control_zombie()
     boundary_check()
 
-    for bullet in p_bullets:
-        bullet.x += 10
-    for bullet in z_bullets:
-        bullet.x += 10
+    # Move the bullets
+    for bullet, direction in zip(p_bullets, p_bullets_directions):
+        if direction == 'up':
+            bullet.y -= 25
+        elif direction == 'down':
+            bullet.y += 25
+        elif direction == 'left':
+            bullet.x -= 25
+        elif direction == 'right':   
+            bullet.x += 25
+        else:
+            bullet.x += 25
 
+    
+       
+    for bullet, direction in zip(z_bullets, z_bullets_directions):
+        if direction == 'up':
+            bullet.x -= 25
+        elif direction == 'down':
+            bullet.y += 25
+        elif direction == 'left':
+            bullet.x -= 25
+        elif direction == 'right':
+            bullet.x += 25
+        else:
+            bullet.x += 25
+
+        
+        
 
 def draw():
     screen.fill((128, 255, 128))
