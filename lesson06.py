@@ -14,38 +14,41 @@ TODO - Homework 2023-07-05
 """
 import pgzrun  # do not delete this line
 
+
 from pgzero.builtins import Actor, keyboard
 
 WIDTH = 800
-HEIGHT = 600
+HEIGHT = 800
 
-plant = Actor("pc")
-zombie = Actor("target")
+plant = Actor("plant")
+zombie = Actor("traffic-cone-zombie_0")
+
+p_bullets = []
+z_bullets = []
 
 
 def control_zombie():
     """Keyboard control for zombie"""
     if keyboard.w:
-        zombie.y -= 1
+        zombie.y -= 15
     if keyboard.s:
-        zombie.y += 1
+        zombie.y += 15
     if keyboard.a:
-        zombie.x -= 1
+        zombie.x -= 15
     if keyboard.d:
-        zombie.x += 1
-
-
+        zombie.x += 15
+    
 def control_plant():
     """Keyboard control for plant"""
     if keyboard.up:
-        plant.y -= 1
+        plant.y -= 15
     if keyboard.down:
-        plant.y += 1
+        plant.y += 15
     if keyboard.left:
-        plant.x -= 1
+        plant.x -= 15
     if keyboard.right:
-        plant.x += 1
-
+        plant.x += 15
+    
 
 def boundary_check():
     """Ensure no actors go out of bounds"""
@@ -63,17 +66,40 @@ def boundary_check():
             actor.x = WIDTH - 50
 
 
+def on_key_down():
+    if keyboard.rshift:
+        bullet = Actor('tomato_1')
+        p_bullets.append(bullet)
+        bullet.pos = plant.pos
+    if keyboard.space:
+        bullet = Actor('target')
+        z_bullets.append(bullet)
+        bullet.pos = zombie.pos
+
+
 def update():
     """Draw the game 60 times every second"""
     control_plant()
     control_zombie()
     boundary_check()
 
+    for bullet in p_bullets:
+        bullet.x += 10
+    for bullet in z_bullets:
+        bullet.x += 10
+
 
 def draw():
     screen.fill((128, 255, 128))
     plant.draw()
     zombie.draw()
+    for bullet in p_bullets:
+        bullet.draw()
+        
+    for bullet in z_bullets:
+        bullet.draw()
+       
+    
 
 
 pgzrun.go()  # do not delete this line and the one above
