@@ -93,6 +93,28 @@ def boundary_check():
             actor.x = WIDTH - 50
 
 
+def move_bullets(bullet_list, direction_list):
+    for bullet, direction in zip(bullet_list, direction_list):
+        if direction == "up":
+            bullet.y -= 25
+        elif direction == "down":
+            bullet.y += 25
+        elif direction == "left":
+            bullet.x -= 25
+        elif direction == "right":
+            bullet.x += 25
+        else:
+            bullet.x += 25
+
+
+def check_collision(bullet_list, actor):
+    for bullet in bullet_list:
+        if bullet.colliderect(actor):
+            bullet_list.remove(bullet)
+            print("lah lah lah")
+
+
+# functions automatically called by pygame zero
 def on_key_down():
     """Shoot bullets"""
     global plant_last_direction, zombie_last_direction
@@ -131,42 +153,15 @@ def update():
         else:
             sd.image = "plant_shoot_0"
 
-    # Move the bullets
-    for bullet, direction in zip(p_bullets, p_bullets_directions):
-        if direction == "up":
-            bullet.y -= 25
-        elif direction == "down":
-            bullet.y += 25
-        elif direction == "left":
-            bullet.x -= 25
-        elif direction == "right":
-            bullet.x += 25
-        else:
-            bullet.x += 25
+    move_bullets(p_bullets, p_bullets_directions)
+    move_bullets(z_bullets, z_bullets_directions)
+    move_bullets(s_bullets, s_bullets_directions)
 
-    for bullet, direction in zip(z_bullets, z_bullets_directions):
-        if direction == "up":
-            bullet.y -= 25
-        elif direction == "down":
-            bullet.y += 25
-        elif direction == "left":
-            bullet.x -= 25
-        elif direction == "right":
-            bullet.x += 25
-        else:
-            bullet.x += 25
-
-    for bullet, direction in zip(s_bullets, s_bullets_directions):
-        if direction == "up":
-            bullet.y -= 20
-        elif direction == "down":
-            bullet.y += 20
-        elif direction == "left":
-            bullet.x -= 20
-        elif direction == "right":
-            bullet.x += 20
-        else:
-            bullet.x += 20
+    check_collision(p_bullets, zombie)
+    check_collision(z_bullets, plant)
+    # AI check
+    check_collision(s_bullets, plant)
+    check_collision(s_bullets, zombie)
 
 
 def draw():
