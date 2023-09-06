@@ -16,19 +16,16 @@ import pgzrun  # do not delete this line
 from datetime import datetime, timedelta
 import random
 
-from pgzero.builtins import Actor, keyboard
-
 WIDTH = 800
 HEIGHT = 600
 justshotbullet = None
 
-#ai plants
+# ai plants
 sd = Actor("plant_shoot_0")
 s_bullets = []
 s_bullets_directions = []
 sd_last_direction = None
 sd_speed = 15
-
 
 
 # Plant attributes
@@ -46,41 +43,40 @@ zombie_last_direction = None
 zombie_speed = 15
 
 
-
 def control_zombie():
     """Keyboard control for zombie"""
     global zombie_last_direction
     if keyboard.w:
         zombie.y -= zombie_speed
-        zombie_last_direction= 'up'
+        zombie_last_direction = "up"
     if keyboard.s:
         zombie.y += zombie_speed
-        zombie_last_direction= 'down'
+        zombie_last_direction = "down"
     if keyboard.a:
         zombie.x -= zombie_speed
-        zombie_last_direction= 'left'
+        zombie_last_direction = "left"
     if keyboard.d:
-        zombie.x +=  zombie_speed
-        zombie_last_direction= 'right'
-    
-    
+        zombie.x += zombie_speed
+        zombie_last_direction = "right"
+
+
 def control_plant():
     """Keyboard control for plant"""
     global plant_last_direction
     if keyboard.up:
         plant.y -= plant_speed
-        plant_last_direction =  'up'
+        plant_last_direction = "up"
     if keyboard.down:
         plant.y += plant_speed
-        plant_last_direction = 'down'
+        plant_last_direction = "down"
     if keyboard.left:
         plant.x -= plant_speed
-        plant_last_direction = 'left'
+        plant_last_direction = "left"
     if keyboard.right:
         plant.x += plant_speed
-        plant_last_direction = 'right'
+        plant_last_direction = "right"
 
-    
+
 def boundary_check():
     """Ensure no actors go out of bounds"""
     for actor in [zombie, plant]:
@@ -103,18 +99,16 @@ def on_key_down():
     global justshotbullet
 
     if keyboard.rshift:
-        bullet = Actor('blue_bullet')
+        bullet = Actor("blue_bullet")
         p_bullets.append(bullet)
         p_bullets_directions.append(plant_last_direction)
         bullet.pos = plant.pos
 
     if keyboard.space:
-
-        bullet = Actor('red_bullet')
+        bullet = Actor("red_bullet")
         z_bullets.append(bullet)
         z_bullets_directions.append(zombie_last_direction)
         bullet.pos = zombie.pos
-    
 
 
 def update():
@@ -124,77 +118,70 @@ def update():
     boundary_check()
 
     global justshotbullet
-    if random.randint(0, 180)<3:
-        bullet = Actor('yellow_bullet')
+    if random.randint(0, 180) < 3:
+        bullet = Actor("yellow_bullet")
         s_bullets.append(bullet)
         s_bullets_directions.append(sd_last_direction)
         bullet.pos = sd.pos
         justshotbullet = datetime.now()
-            
+
     if justshotbullet is not None:
-        if datetime.now() - justshotbullet <= timedelta(seconds=0.3): 
-            sd.image = 'plant_shoot_1'
+        if datetime.now() - justshotbullet <= timedelta(seconds=0.3):
+            sd.image = "plant_shoot_1"
         else:
-            sd.image = 'plant_shoot_0'
+            sd.image = "plant_shoot_0"
 
     # Move the bullets
     for bullet, direction in zip(p_bullets, p_bullets_directions):
-        if direction == 'up':
+        if direction == "up":
             bullet.y -= 25
-        elif direction == 'down':
+        elif direction == "down":
             bullet.y += 25
-        elif direction == 'left':
+        elif direction == "left":
             bullet.x -= 25
-        elif direction == 'right':   
+        elif direction == "right":
             bullet.x += 25
         else:
             bullet.x += 25
 
     for bullet, direction in zip(z_bullets, z_bullets_directions):
-        if direction == 'up':
+        if direction == "up":
             bullet.y -= 25
-        elif direction == 'down':
+        elif direction == "down":
             bullet.y += 25
-        elif direction == 'left':
+        elif direction == "left":
             bullet.x -= 25
-        elif direction == 'right':
+        elif direction == "right":
             bullet.x += 25
         else:
             bullet.x += 25
 
     for bullet, direction in zip(s_bullets, s_bullets_directions):
-        if direction == 'up':
+        if direction == "up":
             bullet.y -= 20
-        elif direction == 'down':
+        elif direction == "down":
             bullet.y += 20
-        elif direction == 'left':
+        elif direction == "left":
             bullet.x -= 20
-        elif direction == 'right':
+        elif direction == "right":
             bullet.x += 20
         else:
             bullet.x += 20
 
 
 def draw():
-    screen.blit('graveyard3' ,(0,0))
+    screen.blit("graveyard3", (0, 0))
     plant.draw()
     zombie.draw()
     sd.draw()
     for bullet in p_bullets:
         bullet.draw()
-        
+
     for bullet in z_bullets:
         bullet.draw()
-    
+
     for bullet in s_bullets:
         bullet.draw()
-
-
-
-
-    
-       
-    
 
 
 pgzrun.go()  # do not delete this line and the one above
