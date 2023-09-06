@@ -43,6 +43,18 @@ zombie_last_direction = None
 zombie_speed = 15
 
 
+class Shooter(Actor):
+    def __init__(self, image, speed=15, **kwargs):
+        self.bullets = []
+        self.bullet_direction = []
+        self.last_direction = None
+        self.speed = speed
+        super().__init__(image, **kwargs)
+
+
+player = Shooter("tomato_0")
+
+
 def control_zombie():
     """Keyboard control for zombie"""
     global zombie_last_direction
@@ -174,6 +186,7 @@ def draw():
     plant.draw()
     zombie.draw()
     sd.draw()
+    player.draw()
     for bullet in p_bullets:
         bullet.draw()
 
